@@ -8,11 +8,11 @@ const enumerateErrorFormat = winston.format((info) => {
     return info;
 });
 
+// TODO Fix error stack not avil
 const logger = winston.createLogger({
     level: config.app.env === 'development' ? 'debug' : 'info',
     format: winston.format.combine(
         enumerateErrorFormat(),
-        config.app.env === 'development' ? winston.format.colorize() : winston.format.uncolorize(),
         winston.format.splat(),
         winston.format.timestamp({
             format: 'YYYY-MM-DD hh:mm:ss'
@@ -21,7 +21,7 @@ const logger = winston.createLogger({
     ),
     transports: [
         new winston.transports.Console(),
-        new winston.transports.File({ filename: config.app.log_location, level: 'info' }),
+        new winston.transports.File({ filename: "app.log", level: 'info' }),
     ],
 });
 

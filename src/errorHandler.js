@@ -7,13 +7,15 @@ const notFoundHandler =  (req, res, next) => {
     });
 }
 
-const  errorHandler = async (err, req, res, next) => {
+const errorHandler = async (err, res) => {
     await logger.error(err);
     
-    return res.status(500).json({
-        status: 500,
-        message: "Internal Server Error",
-    });
+    if(res)
+        return res.status(500).json({
+            status: 500,
+            message: "Internal Server Error",
+        });
+    else return null;
 }
 
 module.exports = {
