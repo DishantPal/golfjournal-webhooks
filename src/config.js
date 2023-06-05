@@ -22,7 +22,8 @@ module.exports = {
         message_template: "",
     },
     stripe: {
-        webhook_secret: process.env.STRIPE_WEBHOOK_SECRET
+        secret_key: process.env.STRIPE_SECRET_KEY,
+        webhook_secret_key: process.env.STRIPE_WEBHOOK_SECRET_KEY
     },
     chatbot: {
         webhook_secret: process.env.CHATBOT_WEBHOOK_SECRET

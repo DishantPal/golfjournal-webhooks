@@ -18,6 +18,7 @@
     "knex": "^2.4.2",
     "mysql2": "^3.3.3",
     "stripe": "^12.8.0",
+    "twilio": "^4.11.2",
     "winston": "^3.9.0"
   },
   "devDependencies": {

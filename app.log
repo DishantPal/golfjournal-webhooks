@@ -1,7 +1,4 @@
-error: 2023-06-04 01:17:41: Hello
-error: 2023-06-04 01:18:58: Hello
-error: 2023-06-04 01:19:01: Async Hello
-error: 2023-06-04 01:19:59: Async Hello
-error: 2023-06-04 01:20:14: Async Hello
-error: 2023-06-04 01:24:10: Async Hello
-error: 2023-06-04 01:30:42: Async Hello
+error: 2023-06-04 11:32:02: select * from `users` where `stripe_customer_idqwe` = 'cus_O1LoqQWQ1THjUW' limit 1 - Unknown column 'stripe_customer_idqwe' in 'where clause'
+error: 2023-06-04 11:53:11: trial_end is not defined
+error: 2023-06-05 08:07:19: user is not defined
+error: 2023-06-05 08:07:35: user is not defined

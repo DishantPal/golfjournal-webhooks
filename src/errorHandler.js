@@ -8,7 +8,11 @@ const notFoundHandler =  (req, res, next) => {
 }
 
 const errorHandler = async (err, res) => {
-    await logger.error(err);
+    await logger.error({
+        "status": "error",
+        "message": err.message,
+        "stack": err.stack,
+    });
     
     if(res)
         return res.status(500).json({

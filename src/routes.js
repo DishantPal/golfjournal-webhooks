@@ -14,7 +14,7 @@ router.get('/ping-err', () => {
 });
 
 router
-    .use(express.raw())
+    .use(express.raw({type: 'application/json'}))
     .post('/webhook/stripe', asyncHanlder(stripeHandler));
 
 router
