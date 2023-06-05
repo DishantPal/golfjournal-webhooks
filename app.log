@@ -2,3 +2,16 @@ error: 2023-06-04 11:32:02: select * from `users` where `stripe_customer_idqwe` 
 error: 2023-06-04 11:53:11: trial_end is not defined
 error: 2023-06-05 08:07:19: user is not defined
 error: 2023-06-05 08:07:35: user is not defined
+error: 2023-06-05 08:11:34: No stripe-signature header value was provided.
+error: 2023-06-05 08:36:50: eventData is not defined
+error: 2023-06-05 08:37:08: Undefined binding(s) detected when compiling FIRST. Undefined column(s): [phone_number] query: select * from `users` where `phone_number` = ? limit ?
+error: 2023-06-05 08:37:27: Undefined binding(s) detected when compiling FIRST. Undefined column(s): [phone_number] query: select * from `users` where `phone_number` = ? limit ?
+error: 2023-06-05 08:44:52: Cannot convert object to primitive value
+error: 2023-06-05 08:44:52: Cannot convert object to primitive value
+error: 2023-06-05 08:51:25: message is not defined
+error: 2023-06-05 08:51:26: Cannot convert object to primitive value
+error: 2023-06-05 08:57:52: db is not defined
+error: 2023-06-05 08:58:36: link is not defined
+error: 2023-06-05 08:59:32: link is not defined
+error: 2023-06-05 09:00:29: select * from `user` where `id` = 4 limit 1 - Table 'golf_journal_app.user' doesn't exist
+error: 2023-06-05 09:09:45: Unexpected token o in JSON at position 1

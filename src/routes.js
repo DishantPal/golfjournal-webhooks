@@ -1,7 +1,7 @@
 const express = require('express');
 const asyncHanlder = require('express-async-handler');
 
-const { chatbotHandler, stripeHandler, twilioHandler } = require('./handlers');
+const { chatbotHandler, stripeHandler, twilioHandler, twilioFailedHandler } = require('./handlers');
 
 const router = express.Router();
 
@@ -14,12 +14,16 @@ router.get('/ping-err', () => {
 });
 
 router
-    .use(express.raw({type: 'application/json'}))
+    .use(express.raw({ type: 'application/json' }))
     .post('/webhook/stripe', asyncHanlder(stripeHandler));
 
 router
     .use(express.urlencoded({ extended: false }))
     .post('/webhook/twilio', asyncHanlder(twilioHandler));
+
+router
+    .use(express.urlencoded({ extended: false }))
+    .post('/webhook/twilio-failed', asyncHanlder(twilioFailedHandler));
 
 router
     .use(express.json())
