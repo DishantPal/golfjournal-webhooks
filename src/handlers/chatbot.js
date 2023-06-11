@@ -88,9 +88,11 @@ module.exports = async (req, res) => {
 
     // console.log("🚀 ~ file: chatbot.js:77 ~ module.exports= ~ journalData:", journalData)
 
-    const existingJournal = db('journals').where({'entry_id': entry_id}).first()
+    const existingJournal = await db('journals').where({'entry_id': entry_id}).first()
+    // console.log("🚀 ~ file: chatbot.js:92 ~ module.exports= ~ existingJournal:", existingJournal)
 
     if(existingJournal) {
+        // console.log('in e');
         await db('journals').where({'entry_id': entry_id}).update({
             user_id: user.id,
             entry_id: entry_id,
@@ -98,6 +100,7 @@ module.exports = async (req, res) => {
             ...journalData
         })
     } else {
+        // console.log('in i');
         await db('journals').insert({
             user_id: user.id,
             entry_id: entry_id,

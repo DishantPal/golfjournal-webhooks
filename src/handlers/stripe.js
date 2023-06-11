@@ -104,7 +104,7 @@ const deletedCustomerSubscription = async (eventData) => {
     }).del();
 }
 const handleCompletedCheckout = async (eventData) => {
-    console.log({ eventData })
+    // console.log({ eventData })
     // get the customer from the customer id
     // update the subscription in database
 }
