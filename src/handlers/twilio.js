@@ -5,13 +5,12 @@ const db = require('../services/db')
 const generateNanoid = require('../services/nanoid')
 
 module.exports = async (req, res) => {
+  const reqBody = req.body
+  const webhookObj = {
+    event_id: reqBody?.MessageSid,
+    payload: reqBody,
+  }
   try {
-    const reqBody = req.body
-
-    const webhookObj = {
-      event_id: reqBody?.MessageSid,
-      payload: reqBody,
-    }
     // Idempotent check
     const webhookInDb = await db('twilio_webhooks').where('event_id', webhookObj?.event_id).where('status','success').first()
     if(!!webhookInDb) {
