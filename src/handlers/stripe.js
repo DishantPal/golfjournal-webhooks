@@ -4,51 +4,63 @@ const config = require('../config');
 
 const db  = require('../services/db')
 
-// create the customer
-// then create the stripe checkout
-// then redirect to stripe checkout
-
 module.exports = async (req, res) => {
-    const secretKey = config.stripe.secret_key;
-    const webhookSecretKey = config.stripe.webhook_secret_key;
-
-    const stripe = StripeClass(secretKey)
-
-    const sig = req.headers['stripe-signature'];
-
-    let event;
-
     try {
-        event = stripe.webhooks.constructEvent(req.body, sig, webhookSecretKey);
-    }
-    catch (err) {
-        throw err
-    }
+        const reqBody = JSON.parse(req.body)
+        const webhookObj = {
+            event_id: reqBody?.id,
+            payload: reqBody,
+        }
+        // Idempotent check
+        const webhookInDb = await db('stripe_webhooks').where('event_id', webhookObj?.event_id).where('status','success').first();
+        if(!!webhookInDb) {
+            return res.json({"status": 200, "message": `webhook processed already with id ${webhookObj.event_id}`});
+        };
+        await db('stripe_webhooks').insert({...webhookObj});
 
-    // Log incomming stripe webhook to database
+        const secretKey = config.stripe.secret_key;
+        const webhookSecretKey = config.stripe.webhook_secret_key;
 
-    switch (event.type) {
-        case 'customer.subscription.created':
-            const customerSubscriptionCreated = event.data.object;
-            await createCustomerSubscription(customerSubscriptionCreated);
-            break;
-        case 'customer.subscription.deleted':
-            const customerSubscriptionDeleted = event.data.object;
-            await deletedCustomerSubscription(customerSubscriptionDeleted);
-            break;
-        case 'customer.subscription.updated':
-            const customerSubscriptionUpdated = event.data.object;
-            await updateCustomerSubscription(customerSubscriptionUpdated);
-            break;
-        case 'checkout.session.completed':
-            const checkoutSessionCompleted = event.data.object;
-            await handleCompletedCheckout(checkoutSessionCompleted);
-            break;
-        default:
-            throw new Error(`Unhandled stripe subscription event. ${event.type}`);
+        const stripe = StripeClass(secretKey)
+
+        const sig = req.headers['stripe-signature'];
+
+        let event;
+
+        try {
+            event = stripe.webhooks.constructEvent(req.body, sig, webhookSecretKey);
+        }
+        catch (err) {
+            throw err
+        }
+
+        // Log incomming stripe webhook to database
+
+        switch (event.type) {
+            case 'customer.subscription.created':
+                const customerSubscriptionCreated = event.data.object;
+                await createCustomerSubscription(customerSubscriptionCreated);
+                break;
+            // Dont delete sub, just handle status change on update
+            // case 'customer.subscription.deleted':
+            //     const customerSubscriptionDeleted = event.data.object;
+            //     await deletedCustomerSubscription(customerSubscriptionDeleted);
+            //     break;
+            case 'customer.subscription.updated':
+                const customerSubscriptionUpdated = event.data.object;
+                await updateCustomerSubscription(customerSubscriptionUpdated);
+                break;
+            default:
+                throw new Error(`Unhandled stripe subscription event. ${event.type}`);
+        }
+
+        await db('stripe_webhooks').where('event_id', webhookObj.event_id).update({status: 'success'});
+        return res.send();
+    } catch (error) {
+        console.log("🚀 ~ file: stripe.js:64 ~ module.exports= ~ error:", error)
+        await db('stripe_webhooks').where('event_id', webhookObj.event_id).update({status: 'failed'});
+        throw error;
     }
-
-    return res.send();
 }
 
 const createCustomerSubscription = async (eventData) => {
@@ -93,16 +105,16 @@ const updateCustomerSubscription = async (eventData) => {
         'user_id': user.id
     }).update(subscriptionObj);
 }
-const deletedCustomerSubscription = async (eventData) => {
-    if(eventData.object != 'subscription') throw new Error("Unknown event object from stripe");
+// const deletedCustomerSubscription = async (eventData) => {
+//     if(eventData.object != 'subscription') throw new Error("Unknown event object from stripe");
     
-    const user = await db('users').where('stripe_customer_id', eventData.customer).first();
-    if(!user) return
+//     const user = await db('users').where('stripe_customer_id', eventData.customer).first();
+//     if(!user) return
 
-    await db('subscriptions').where({
-        'user_id': user.id
-    }).del();
-}
+//     await db('subscriptions').where({
+//         'user_id': user.id
+//     }).del();
+// }
 const handleCompletedCheckout = async (eventData) => {
     // console.log({ eventData })
     // get the customer from the customer id
