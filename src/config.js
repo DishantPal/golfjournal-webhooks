@@ -6,7 +6,15 @@ module.exports = {
         port: process.env.PORT,
         env: process.env.NODE_ENV,
         name: process.env.APP_NAME,
+        journal_dashboard_url: process.env.JOURNAL_DASHBOARD_URL,
         log_location: "../logs/app.log"
+    },
+    messages: {
+        user_notfound: `We do not recognize you in our system. If you have an account, please confirm your number in your account settings. If not, please sign up for one here: ${process.env.JOURNAL_DASHBOARD_URL}`,
+        user_subscription_notfound: `User subscription not found.`,
+        message_key_invaild: `SMS "PLAY" to get journal entry link.`,
+        journal_entry_message: `Here's your link to make entry: ${process.env.CHATBOT_ENTRY_LINK}`,
+
     },
     db: {
         host: process.env.DB_HOST,
